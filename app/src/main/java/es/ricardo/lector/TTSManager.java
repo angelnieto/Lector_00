@@ -7,6 +7,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.Collection;
@@ -130,8 +131,15 @@ public class TTSManager  {
                     public void onUtteranceCompleted(String utteranceId) {
 
                         if(iterator.hasNext()){
-                            ((ListadoActivity)app.getCurrentActivity()).animation();
-                            decirTitulo(iterator, listaHorizontal);
+                            ((ListadoActivity)app.getCurrentActivity()).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((ListadoActivity)app.getCurrentActivity()).animation();
+                                    decirTitulo(iterator, listaHorizontal);
+                                }
+                            });
+                       //     ((ListadoActivity)app.getCurrentActivity()).animation();
+                       //     decirTitulo(iterator, listaHorizontal);
                         }
                     }
                 };

@@ -92,13 +92,14 @@ public class ListadoActivity extends AppCompatActivity {
         app.setFiles(files);
         int i=0;
 
-        //ttsManager.addBooks(files);
-        runOnUiThread(new Runnable() {
+        /*  runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 app.getTtsManager().addBooks(files, listaHorizontal);
             }
         });
+        */
+        app.getTtsManager().addBooks(files, listaHorizontal);
 
     }
 
@@ -164,7 +165,7 @@ public class ListadoActivity extends AppCompatActivity {
 
         listaHorizontal.startAnimation(anim);
 
-   /*     FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)listaHorizontal.getLayoutParams();
+    /*    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)listaHorizontal.getLayoutParams();
         //params.topMargin += amountToMoveDown;
         params.leftMargin += amountToMoveRight;
         listaHorizontal.setLayoutParams(params);
