@@ -3,6 +3,10 @@ package es.ricardo.lector;
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.util.Collection;
@@ -20,7 +24,7 @@ public class TTSManager  {
     private boolean isLoaded = false;
     private String actualFileName = null;
     private File actualFile = null;
-    //private Iterator iterator = null;
+    private Lector app = null;
 
     public File getActualFile() {
         return actualFile;
@@ -42,6 +46,10 @@ public class TTSManager  {
 
         try {
             mTts = new TextToSpeech(context, onInitListener);
+
+            if(app == null) {
+                app = (Lector) context.getApplicationContext();
+            }
          } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,14 +104,14 @@ public class TTSManager  {
                 Log.e("error", "TTS Not Initialized");
     }
 
-    public void addBooks(Collection libros){
+    public void addBooks(Collection libros, FrameLayout listaHorizontal){
         Iterator iterator = libros.iterator();
         if(iterator.hasNext() && isLoaded){
-            decirTitulo(iterator);
+            decirTitulo(iterator, listaHorizontal);
         }
     }
 
-    private void decirTitulo(final Iterator iterator) {
+    private void decirTitulo(final Iterator iterator, final FrameLayout listaHorizontal) {
         File file = (File) iterator.next();
         final String fileName = file.getName().substring(0, file.getName().lastIndexOf("."));
         initQueue(fileName);
@@ -122,7 +130,8 @@ public class TTSManager  {
                     public void onUtteranceCompleted(String utteranceId) {
 
                         if(iterator.hasNext()){
-                            decirTitulo(iterator);
+                            ((ListadoActivity)app.getCurrentActivity()).animation();
+                            decirTitulo(iterator, listaHorizontal);
                         }
                     }
                 };
@@ -130,6 +139,7 @@ public class TTSManager  {
 
 
     }
+
 
 
  /*   @Override
