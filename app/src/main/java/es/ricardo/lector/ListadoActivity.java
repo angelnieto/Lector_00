@@ -34,8 +34,9 @@ public class ListadoActivity extends AppCompatActivity {
     static final int ACTION_VALUE=1;
 
     private GestureDetector mGestureDetector;
-    ProgressBar circulo = null;
-    FrameLayout listaHorizontal = null;
+    private ProgressBar circulo = null;
+    private FrameLayout listaHorizontal = null;
+    private Rect pantalla;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class ListadoActivity extends AppCompatActivity {
         //Escalo la barra de progreso acorde a la resolución de la pantalla
         WindowManager windowManager =  (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        Rect pantalla=new Rect();
+        pantalla=new Rect();
         windowManager.getDefaultDisplay().getRectSize(pantalla);
         DisplayMetrics dm = getResources().getDisplayMetrics();
 
@@ -92,13 +93,6 @@ public class ListadoActivity extends AppCompatActivity {
         app.setFiles(files);
         int i=0;
 
-        /*  runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                app.getTtsManager().addBooks(files, listaHorizontal);
-            }
-        });
-        */
         app.getTtsManager().addBooks(files, listaHorizontal);
 
     }
@@ -141,9 +135,10 @@ public class ListadoActivity extends AppCompatActivity {
     }
 
     public void animation(){
-        final int amountToMoveRight = 100;
-        TranslateAnimation anim = new TranslateAnimation(0, amountToMoveRight, 0, 0);
-        anim.setDuration(1000);
+        //final int amountToMoveLeft = -listaHorizontal.getWidth()+1;
+        final int amountToMoveLeft = pantalla.width();
+        TranslateAnimation anim = new TranslateAnimation(0, -amountToMoveLeft, 0, 0);
+        anim.setDuration(500);
 
         anim.setAnimationListener(new TranslateAnimation.AnimationListener() {
 
@@ -157,8 +152,8 @@ public class ListadoActivity extends AppCompatActivity {
             public void onAnimationEnd(Animation animation)
             {
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)listaHorizontal.getLayoutParams();
-                //params.topMargin += amountToMoveDown;
-                params.leftMargin += amountToMoveRight;
+
+                params.rightMargin += amountToMoveLeft;
                 listaHorizontal.setLayoutParams(params);
             }
         });
@@ -167,7 +162,7 @@ public class ListadoActivity extends AppCompatActivity {
 
     /*    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)listaHorizontal.getLayoutParams();
         //params.topMargin += amountToMoveDown;
-        params.leftMargin += amountToMoveRight;
+        params.leftMargin += amountToMoveLeft;
         listaHorizontal.setLayoutParams(params);
 */
 

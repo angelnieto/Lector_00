@@ -138,8 +138,6 @@ public class TTSManager  {
                                     decirTitulo(iterator, listaHorizontal);
                                 }
                             });
-                       //     ((ListadoActivity)app.getCurrentActivity()).animation();
-                       //     decirTitulo(iterator, listaHorizontal);
                         }
                     }
                 };
@@ -148,12 +146,4 @@ public class TTSManager  {
 
     }
 
-
-
- /*   @Override
-    public void onUtteranceCompleted(String utteranceId) {
-        if(iterator.hasNext()){
-            decirTitulo(iterator);
-        }
-    }*/
 }
