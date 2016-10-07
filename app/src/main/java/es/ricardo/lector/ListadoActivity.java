@@ -35,7 +35,7 @@ public class ListadoActivity extends AppCompatActivity {
 
     private GestureDetector mGestureDetector;
     private ProgressBar circulo = null;
-    private FrameLayout listaHorizontal = null;
+    private LinearLayout listaHorizontal = null;
     private Rect pantalla;
 
     @Override
@@ -60,7 +60,7 @@ public class ListadoActivity extends AppCompatActivity {
         circulo.setScaleX(Math.round(Math.floor(0.015*pantalla.width()/dm.density)));
         circulo.setScaleY(circulo.getScaleX());
 
-        listaHorizontal = (FrameLayout)findViewById(R.id.scroll);
+        listaHorizontal = (LinearLayout)findViewById(R.id.innerLay);
 
         //Paths paths = new Paths();
         //paths.glob("//mnt", "**/*.mp3");
@@ -160,11 +160,7 @@ public class ListadoActivity extends AppCompatActivity {
 
         listaHorizontal.startAnimation(anim);
 
-    /*    FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)listaHorizontal.getLayoutParams();
-        //params.topMargin += amountToMoveDown;
-        params.leftMargin += amountToMoveLeft;
-        listaHorizontal.setLayoutParams(params);
-*/
+        //   http://android-er.blogspot.nl/2012/07/implement-gallery-like.html
 
     }
 

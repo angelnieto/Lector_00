@@ -105,14 +105,14 @@ public class TTSManager  {
                 Log.e("error", "TTS Not Initialized");
     }
 
-    public void addBooks(Collection libros, FrameLayout listaHorizontal){
+    public void addBooks(Collection libros, LinearLayout listaHorizontal){
         Iterator iterator = libros.iterator();
         if(iterator.hasNext() && isLoaded){
             decirTitulo(iterator, listaHorizontal);
         }
     }
 
-    private void decirTitulo(final Iterator iterator, final FrameLayout listaHorizontal) {
+    private void decirTitulo(final Iterator iterator, final LinearLayout listaHorizontal) {
         File file = (File) iterator.next();
         final String fileName = file.getName().substring(0, file.getName().lastIndexOf("."));
         initQueue(fileName);
