@@ -50,9 +50,9 @@ public class TareaAsincrona extends AsyncTask<String, String, Boolean> {
 
         //files = FileUtils.listFiles(root, extensions, true);
 		files = new ArrayList();
-		files.add(new File("/mnt/sdcard/bluetooth/02-the trashmen - sufin' bird478.mp3"));
-		files.add(new File("/mnt/sdcard/bluetooth/Sore - Different.mp3"));
-		files.add(new File("/mnt/sdcard/Music/14. Inara's Suite.mp3"));
+	//	files.add(new File("/mnt/sdcard/bluetooth/02-the trashmen - sufin' bird478.mp3"));
+	//	files.add(new File("/mnt/sdcard/bluetooth/Sore - Different.mp3"));
+	//	files.add(new File("/mnt/sdcard/Music/14. Inara's Suite.mp3"));
 
         tiempo = System.currentTimeMillis()- tiempo;
         Log.v("lector00","tiempo : "+ tiempo);

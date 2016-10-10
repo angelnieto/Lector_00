@@ -107,11 +107,29 @@ public class ListadoActivity extends AppCompatActivity {
 
         if(!files.isEmpty()) {
             componerListado(files);
+            app.getTtsManager().addBooks(files, listaHorizontal);
         }else{
-
+            sinResultados();
         }
-        app.getTtsManager().addBooks(files, listaHorizontal);
 
+
+    }
+
+    private void sinResultados() {
+        LinearLayout layout = new LinearLayout(getApplicationContext());
+        layout.setLayoutParams(new LinearLayout.LayoutParams(pantalla.width(), LinearLayout.LayoutParams.MATCH_PARENT));
+        layout.setGravity(Gravity.CENTER_VERTICAL);
+        Drawable fondo = getResources().getDrawable(R.drawable.fondo_libro);
+        layout.setBackground(fondo);
+
+        TextView texto = new TextView(getApplicationContext());
+        texto.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        texto.setTextColor(getResources().getColor(R.color.colorAccent));
+        texto.setGravity(Gravity.CENTER);
+        texto.setText(getResources().getString(R.string.no_results));
+        layout.addView(texto);
+
+        listaHorizontal.addView(layout);
     }
 
     private void componerListado(Collection files) {
