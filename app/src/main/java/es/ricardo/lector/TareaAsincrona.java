@@ -7,6 +7,7 @@ import android.util.Log;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class TareaAsincrona extends AsyncTask<String, String, Boolean> {
@@ -33,9 +34,9 @@ public class TareaAsincrona extends AsyncTask<String, String, Boolean> {
 	}
 
 	protected void onPostExecute(Boolean result) {
-        if(app.getCurrentActivity() instanceof ListadoActivity) {
-            ((ListadoActivity) app.getCurrentActivity()).updateResults(files);
-        }
+                if(app.getCurrentActivity() instanceof ListadoActivity) {
+                    ((ListadoActivity) app.getCurrentActivity()).updateResults(files);
+                }
 	}
 
 	@Override
@@ -47,9 +48,23 @@ public class TareaAsincrona extends AsyncTask<String, String, Boolean> {
 
         String[] extensions = { "mp3" };
 
-        files = FileUtils.listFiles(root, extensions, true);
+        //files = FileUtils.listFiles(root, extensions, true);
+		files = new ArrayList();
+		files.add(new File("/mnt/sdcard/bluetooth/02-the trashmen - sufin' bird478.mp3"));
+		files.add(new File("/mnt/sdcard/bluetooth/Sore - Different.mp3"));
+		files.add(new File("/mnt/sdcard/Music/14. Inara's Suite.mp3"));
 
-        Log.v("lector00","Tiempo empleado : "+ Long.toString(System.currentTimeMillis()- tiempo));
+        tiempo = System.currentTimeMillis()- tiempo;
+        Log.v("lector00","tiempo : "+ tiempo);
+        if(tiempo<3.5){
+            try {
+                Thread.currentThread();
+                Thread.sleep(8000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.v("lector00","Tiempo empleado : "+ Long.toString(tiempo));
 		Log.v("lector00","Archivos encontrados : "+ Long.toString(files.size()));
 
 		 return true;

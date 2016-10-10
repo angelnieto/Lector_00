@@ -19,33 +19,11 @@
             android:indeterminate="true"
             android:indeterminateDrawable="@drawable/progress"/>
 
-     <!--   <HorizontalScrollView
-            android:id="@+id/scroll"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:fadeScrollbars="false"
-            android:background="@color/azul">   -->
-
-    <!--    <LinearLayout
-            android:layout_width="540dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/fondo_libro"
-            android:gravity="center_vertical">
-
-     <  <FrameLayout
-            android:id="@+id/scroll"
-            android:layout_width="1080dp"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@drawable/fondo_libro">     -->
-
-        <HorizontalScrollView
+         <HorizontalScrollView
             android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:scrollbars="none"
-            android:fillViewport="true">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/innerLay"
@@ -54,79 +32,58 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal" >
 
-            <LinearLayout
-                    android:layout_width="540dp"
+     <!--       <LinearLayout
+                    android:layout_width="350dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/fondo_libro"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:background="@drawable/fondo_libro">
 
                     <TextView
                         android:id="@+id/fondo1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="HOLA"
+                        android:text="UNO"
                         android:textColor="@color/colorAccent"
                         android:gravity="center"/>
 
                </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="540dp"
+                    android:layout_width="350dp"
                     android:layout_height="match_parent"
-                    android:background="@drawable/fondo_libro"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:background="@drawable/fondo_libro">
 
                     <TextView
                         android:id="@+id/fondo2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="ADIOS"
-                        android:textColor="@color/colorAccent"/>
+                        android:text="DOS"
+                        android:textColor="@color/colorAccent"
+                        android:gravity="center"/>
 
                 </LinearLayout>
 
-           <!-- <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/libro1"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="350dp"
                     android:layout_height="match_parent"
-                    android:src="@drawable/fondo_libro"
-                    android:scaleType="fitXY"/>
+                    android:gravity="center_vertical"
+                    android:background="@drawable/fondo_libro">
 
-               <TextView
-                    android:id="@+id/fondo1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignLeft="@id/libro1"
-                    android:layout_alignTop="@id/libro1"
-                    android:layout_alignRight="@id/libro1"
-                    android:layout_alignBottom="@id/libro1"
-                    android:text="HOLA"
-                    android:textColor="@color/colorAccent"/>
+                    <TextView
+                        android:id="@+id/fondo3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="TRES"
+                        android:textColor="@color/colorAccent"
+                        android:gravity="center"/>
 
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/libro2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/fondo_libro"
-                android:scaleType="fitXY"/>
+                </LinearLayout> -->
 
-            <TextView
-                android:id="@+id/fondo2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignLeft="@id/libro2"
-                android:layout_alignTop="@id/libro2"
-                android:layout_alignRight="@id/libro2"
-                android:layout_alignBottom="@id/libro2"
-                android:text="ADIOS"
-                android:textColor="@color/colorAccent"/>
-
-                -->
             </LinearLayout>
 
-        </HorizontalScrollView>
 
-    <!--    </HorizontalScrollView> -->
+             </HorizontalScrollView>
 
     </FrameLayout>
 

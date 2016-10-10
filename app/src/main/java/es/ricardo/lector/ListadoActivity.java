@@ -1,7 +1,11 @@
 package es.ricardo.lector;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,8 +13,10 @@ import android.support.v7.widget.ListViewCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -22,7 +28,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class ListadoActivity extends AppCompatActivity {
 
@@ -37,6 +45,8 @@ public class ListadoActivity extends AppCompatActivity {
     private ProgressBar circulo = null;
     private LinearLayout listaHorizontal = null;
     private Rect pantalla;
+    private float positionLeft=0;
+    private DisplayMetrics dm = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +63,7 @@ public class ListadoActivity extends AppCompatActivity {
 
         pantalla=new Rect();
         windowManager.getDefaultDisplay().getRectSize(pantalla);
-        DisplayMetrics dm = getResources().getDisplayMetrics();
+        dm = getResources().getDisplayMetrics();
 
         circulo=(ProgressBar)findViewById(R.id.progressBar);
 
@@ -90,11 +100,39 @@ public class ListadoActivity extends AppCompatActivity {
     public void updateResults(final Collection files) {
         circulo.setVisibility(View.GONE);
         listaHorizontal.setVisibility(View.VISIBLE);
-        app.setFiles(files);
-        int i=0;
 
+        //findViewById(R.id.scroll).setEnabled(false);
+
+        app.setFiles(files);
+
+        if(!files.isEmpty()) {
+            componerListado(files);
+        }else{
+
+        }
         app.getTtsManager().addBooks(files, listaHorizontal);
 
+    }
+
+    private void componerListado(Collection files) {
+        Iterator iterator = files.iterator();
+        while(iterator.hasNext()) {
+            LinearLayout layout = new LinearLayout(getApplicationContext());
+            layout.setLayoutParams(new LinearLayout.LayoutParams(pantalla.width(), LinearLayout.LayoutParams.MATCH_PARENT));
+            layout.setGravity(Gravity.CENTER_VERTICAL);
+            Drawable fondo = getResources().getDrawable(R.drawable.fondo_libro);
+            layout.setBackground(fondo);
+
+            TextView texto = new TextView(getApplicationContext());
+            texto.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+            texto.setTextColor(getResources().getColor(R.color.colorAccent));
+            texto.setGravity(Gravity.CENTER);
+            File libro = (File)iterator.next();
+            texto.setText(libro.getName().substring(0, libro.getName().lastIndexOf(".")));
+            layout.addView(texto);
+
+            listaHorizontal.addView(layout);
+        }
     }
 
     @Override
@@ -121,7 +159,7 @@ public class ListadoActivity extends AppCompatActivity {
             switch (GestureListener.currentGestureDetected) {
                 case Lector.SINGLE_TAP:
                     if (circulo.getVisibility() == View.GONE) {
-                        app.getTtsManager().stop();
+                         app.getTtsManager().stop();
 
                          Intent i = new Intent(this,ReproductorActivity.class);
                          i.putExtra("ficheroEscogido",app.getTtsManager().getActualFile());
@@ -135,33 +173,10 @@ public class ListadoActivity extends AppCompatActivity {
     }
 
     public void animation(){
-        //final int amountToMoveLeft = -listaHorizontal.getWidth()+1;
-        final int amountToMoveLeft = pantalla.width();
-        TranslateAnimation anim = new TranslateAnimation(0, -amountToMoveLeft, 0, 0);
-        anim.setDuration(500);
 
-        anim.setAnimationListener(new TranslateAnimation.AnimationListener() {
-
-            @Override
-            public void onAnimationStart(Animation animation) { }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) { }
-
-            @Override
-            public void onAnimationEnd(Animation animation)
-            {
-                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)listaHorizontal.getLayoutParams();
-
-                params.rightMargin += amountToMoveLeft;
-                listaHorizontal.setLayoutParams(params);
-            }
-        });
-
-        listaHorizontal.startAnimation(anim);
-
-        //   http://android-er.blogspot.nl/2012/07/implement-gallery-like.html
-
+        positionLeft = positionLeft + pantalla.width();
+        HorizontalScrollView hsv = (HorizontalScrollView) findViewById(R.id.scroll);
+        ObjectAnimator.ofInt(hsv, "scrollX",  Math.round(positionLeft)).setDuration(500).start();
     }
 
 }
