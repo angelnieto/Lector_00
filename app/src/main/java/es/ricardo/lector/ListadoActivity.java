@@ -6,12 +6,14 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -32,7 +34,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class ListadoActivity extends AppCompatActivity {
+public class ListadoActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private TextToSpeech tts;
     //TTSManager ttsManager = null;
@@ -66,7 +68,6 @@ public class ListadoActivity extends AppCompatActivity {
         dm = getResources().getDisplayMetrics();
 
         circulo=(ProgressBar)findViewById(R.id.progressBar);
-
         circulo.setScaleX(Math.round(Math.floor(0.015*pantalla.width()/dm.density)));
         circulo.setScaleY(circulo.getScaleX());
 
@@ -76,9 +77,7 @@ public class ListadoActivity extends AppCompatActivity {
         //paths.glob("//mnt", "**/*.mp3");
         //Log.v("lector00","Archivos encontrados : "+ Long.toString(paths.getFiles().size()));
 
-        //mGestureDetector = new GestureDetector(this, new GestureListener());
         mGestureDetector = new GestureDetector(this, new GestureListener());
-
 
         if(app.getFiles().isEmpty()) {
             circulo.setVisibility(View.VISIBLE);
@@ -101,8 +100,6 @@ public class ListadoActivity extends AppCompatActivity {
         circulo.setVisibility(View.GONE);
         listaHorizontal.setVisibility(View.VISIBLE);
 
-        //findViewById(R.id.scroll).setEnabled(false);
-
         app.setFiles(files);
 
         if(!files.isEmpty()) {
@@ -110,6 +107,9 @@ public class ListadoActivity extends AppCompatActivity {
             app.getTtsManager().addBooks(files, listaHorizontal);
         }else{
             sinResultados();
+
+            MediaPlayer player = MediaPlayer.create(this.getApplicationContext(), R.raw.sin_resultados);
+            player.start();
         }
 
 
@@ -133,6 +133,10 @@ public class ListadoActivity extends AppCompatActivity {
     }
 
     private void componerListado(Collection files) {
+        //Activo el escuchador de eventos
+        HorizontalScrollView scrollView= (HorizontalScrollView)findViewById(R.id.scroll);
+        scrollView.setOnTouchListener(this);
+
         Iterator iterator = files.iterator();
         while(iterator.hasNext()) {
             LinearLayout layout = new LinearLayout(getApplicationContext());
@@ -147,6 +151,7 @@ public class ListadoActivity extends AppCompatActivity {
             texto.setGravity(Gravity.CENTER);
             File libro = (File)iterator.next();
             texto.setText(libro.getName().substring(0, libro.getName().lastIndexOf(".")));
+            texto.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 60);
             layout.addView(texto);
 
             listaHorizontal.addView(layout);
@@ -158,14 +163,14 @@ public class ListadoActivity extends AppCompatActivity {
         switch (requestCode) {
             case ACTION_VALUE:
                 if (!app.getFiles().isEmpty()) {
+                    componerListado(app.getFiles());
                     app.getTtsManager().addBooks(app.getFiles(), listaHorizontal);
-                    //ttsManager.addBooks(app.getFiles());
                 }
             break;
         }
     }
 
-    @Override
+/*    @Override
     public boolean onTouchEvent(MotionEvent event)
     {
         //method onTouchEvent of GestureDetector class Analyzes the given motion event
@@ -189,7 +194,7 @@ public class ListadoActivity extends AppCompatActivity {
 
         return true;
     }
-
+*/
     public void animation(){
 
         positionLeft = positionLeft + pantalla.width();
@@ -197,4 +202,23 @@ public class ListadoActivity extends AppCompatActivity {
         ObjectAnimator.ofInt(hsv, "scrollX",  Math.round(positionLeft)).setDuration(500).start();
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        boolean eventConsumed = mGestureDetector.onTouchEvent(event);
+        if(eventConsumed) {
+            switch (GestureListener.currentGestureDetected) {
+                case Lector.SINGLE_TAP:
+                    if (circulo.getVisibility() == View.GONE) {
+                        app.getTtsManager().stop();
+
+                        Intent i = new Intent(this,ReproductorActivity.class);
+                        i.putExtra("ficheroEscogido",app.getTtsManager().getActualFile());
+                        startActivityForResult(i, ACTION_VALUE);
+                    }
+                    break;
+            }
+        }
+
+        return true;
+    }
 }
