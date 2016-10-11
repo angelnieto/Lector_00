@@ -3,6 +3,7 @@ package es.ricardo.lector;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import static java.security.AccessController.getContext;
@@ -15,8 +16,11 @@ class GestureListener extends GestureDetector.SimpleOnGestureListener
 {
 
     static int currentGestureDetected;
+    static boolean longPressed = false;
     private static final int SWIPE_MIN_DISTANCE = 80;
     private static final int SWIPE_THRESHOLD_VELOCITY = 50;
+
+
 
     // Override s all the callback methods of GestureDetector.SimpleOnGestureListener
     @Override
@@ -30,6 +34,13 @@ class GestureListener extends GestureDetector.SimpleOnGestureListener
         currentGestureDetected = Lector.DOUBLE_TAP;
         return true;
     }
+
+    @Override
+    public void onLongPress(MotionEvent ev) {
+        currentGestureDetected = Lector.LONG_PRESS;
+        longPressed = true;
+    }
+
   /*  @Override
     public void onShowPress(MotionEvent ev) {
         currentGestureDetected=ev.toString();
@@ -72,6 +83,5 @@ class GestureListener extends GestureDetector.SimpleOnGestureListener
         }
         return true;
     }
-
 
 }

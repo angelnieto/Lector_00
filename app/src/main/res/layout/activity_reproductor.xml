@@ -11,10 +11,12 @@
     android:background="@color/colorAccent"
     tools:context="es.ricardo.lector.ReproductorActivity">
 
-  <!--  <Button
-        android:id="@+id/botonReproductor"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorAccent" />
--->
+  <TextView
+      android:id="@+id/capitulo"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:text="TRES"
+      android:textColor="@color/colorPrimaryDark"
+      android:gravity="center"/>
+
 </RelativeLayout>

@@ -151,7 +151,7 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
             texto.setGravity(Gravity.CENTER);
             File libro = (File)iterator.next();
             texto.setText(libro.getName().substring(0, libro.getName().lastIndexOf(".")));
-            texto.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 60);
+            texto.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
             layout.addView(texto);
 
             listaHorizontal.addView(layout);
@@ -208,11 +208,12 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
         if(eventConsumed) {
             switch (GestureListener.currentGestureDetected) {
                 case Lector.SINGLE_TAP:
-                    if (circulo.getVisibility() == View.GONE) {
+                    if (circulo.getVisibility() == View.GONE && app.getTtsManager().getActualFile() != null) {
                         app.getTtsManager().stop();
 
                         Intent i = new Intent(this,ReproductorActivity.class);
-                        i.putExtra("ficheroEscogido",app.getTtsManager().getActualFile());
+                        app.setCapituloActual(app.getTtsManager().getActualFile());
+                        //i.putExtra("ficheroEscogido",app.getTtsManager().getActualFile());
                         startActivityForResult(i, ACTION_VALUE);
                     }
                     break;

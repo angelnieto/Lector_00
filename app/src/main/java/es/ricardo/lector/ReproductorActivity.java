@@ -1,13 +1,16 @@
 package es.ricardo.lector;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.media.MediaPlayer;
+import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.GestureDetector;
-import android.view.View;
 import android.view.MotionEvent;
-import android.widget.Button;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -15,45 +18,40 @@ import java.io.IOException;
 
 public class ReproductorActivity extends AppCompatActivity {
 
-    MediaPlayer player = new MediaPlayer();
+    MediaPlayer player;
 
-    static File ficheroEscogido;
+    //static File ficheroEscogido;
     private GestureDetector mGestureDetector;
+    private Lector app = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reproductor);
 
-    //    final Button boton = (Button) findViewById(R.id.botonReproductor);
-
+        if(app == null) {
+            app = (Lector) this.getApplicationContext();
+        }
 
         try {
-            Intent intent = getIntent();
-            ficheroEscogido = (File)intent.getExtras().get("ficheroEscogido");
+            //Intent intent = getIntent();
+            //ficheroEscogido = (File)intent.getExtras().get("ficheroEscogido");
 
             mGestureDetector = new GestureDetector(this, new GestureListener());
-            //boton.setText(ficheroEscogido.getName());
 
-            player.setDataSource(ficheroEscogido.getPath());
-            //player.setDataSource(ttsManager.actualFile.getPath());
+            mostrarCapitulo();
+
+            player = new MediaPlayer();
+            player.setDataSource(app.getCapituloActual().getPath());
             player.prepare();
+            player.seekTo(app.getPosicionActual());
             player.start();
+
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-  /*     boton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-
-                    //player = MediaPlayer.create(this, Uri.parse(ttsManager.actualFile.getPath().toString()));
-
-                }
-
-        });
-*/
     }
 
     @Override
@@ -87,14 +85,42 @@ public class ReproductorActivity extends AppCompatActivity {
                     player.seekTo(player.getCurrentPosition() - 2000);
                     break;
             }
+        }else if(GestureListener.currentGestureDetected == Lector.LONG_PRESS && GestureListener.longPressed){
+            GestureListener.longPressed = false;
+
+            float coordenada = event.getX();
+
+            WindowManager windowManager =  (WindowManager) getSystemService(WINDOW_SERVICE);
+            Rect pantalla=new Rect();
+            windowManager.getDefaultDisplay().getRectSize(pantalla);
+
+            try {
+                if(coordenada < pantalla.width()/2) {
+                    app.setCapituloActual(app.getPrevious(app.getCapituloActual()));
+                    showToast("Previous");
+                }else{
+                    app.setCapituloActual(app.getNext(app.getCapituloActual()));
+                    showToast("Next");
+                }
+                player.reset();
+                player.setDataSource(app.getCapituloActual().getPath());
+                player.prepare();
+                player.start();
+                //reseteo la variable currentPosition del delegado
+                app.setPosicionActual(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            mostrarCapitulo();
         }
-   //     if (eventConsumed)
-   //     {
-   //         Toast.makeText(this,GestureListener.currentGestureDetected,Toast.LENGTH_LONG).show();
-            return true;
-   //     }
-   //     else
-   //         return false;
+
+        return true;
+    }
+
+    private void mostrarCapitulo() {
+        String fileName = app.getCapituloActual().getName().substring(0, app.getCapituloActual().getName().lastIndexOf("."));
+        ((TextView)findViewById(R.id.capitulo)).setText(fileName);
     }
 
 
@@ -110,15 +136,18 @@ public class ReproductorActivity extends AppCompatActivity {
     protected void onStop(){
         super.onStop();
 
-        volver();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if(pm.isScreenOn()) {
+            player.stop();
+        }
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
 
-        if (player!=null)
-            player.release();
+        app.setPosicionActual(player.getCurrentPosition());
+        player.release();
     }
 
     public void showToast(final String toast) {
