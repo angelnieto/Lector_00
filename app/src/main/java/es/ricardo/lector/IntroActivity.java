@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.util.LinkedList;
 
+
 public class IntroActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
 
     private MediaPlayer player = null;

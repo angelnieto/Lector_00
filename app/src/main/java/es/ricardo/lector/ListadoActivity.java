@@ -85,6 +85,7 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
         }else{
             circulo.setVisibility(View.GONE);
             listaHorizontal.setVisibility(View.VISIBLE);
+            updateResults(app.getFiles());
         }
     }
 
@@ -94,6 +95,9 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
         super.onPause();
 
         app.getTtsManager().stop();
+
+        //reseteo la posición cuando pulsamos el botón de Back
+        app.setPosicionActual(0);
     }
 
     public void updateResults(final Collection files) {
@@ -170,31 +174,6 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
         }
     }
 
-/*    @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-        //method onTouchEvent of GestureDetector class Analyzes the given motion event
-        //and if applicable triggers the appropriate callbacks on the GestureDetector.OnGestureListener supplied.
-        //Returns true if the GestureDetector.OnGestureListener consumed the event, else false.
-
-        boolean eventConsumed = mGestureDetector.onTouchEvent(event);
-        if(eventConsumed) {
-            switch (GestureListener.currentGestureDetected) {
-                case Lector.SINGLE_TAP:
-                    if (circulo.getVisibility() == View.GONE) {
-                         app.getTtsManager().stop();
-
-                         Intent i = new Intent(this,ReproductorActivity.class);
-                         i.putExtra("ficheroEscogido",app.getTtsManager().getActualFile());
-                         startActivityForResult(i, ACTION_VALUE);
-                    }
-                    break;
-            }
-        }
-
-        return true;
-    }
-*/
     public void animation(){
 
         positionLeft = positionLeft + pantalla.width();

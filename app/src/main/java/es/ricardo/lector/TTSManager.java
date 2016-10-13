@@ -75,7 +75,7 @@ public class TTSManager  {
                 }
 
                 mTts.setSpeechRate(Float.valueOf("0.9"));
-                mTts.addSpeech(" ","es.ricardo.lector",R.raw.silencio);
+                mTts.addSpeech(" ","es.ricardo.lector", R.raw.silencio);
 
             } else {
                 Log.e("error", "Initialization Failed!");

@@ -1,5 +1,7 @@
 package es.ricardo.lector;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -15,6 +17,9 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+
+import es.ricardo.servicio.BackgroundService;
 
 public class ReproductorActivity extends AppCompatActivity {
 
@@ -23,6 +28,7 @@ public class ReproductorActivity extends AppCompatActivity {
     //static File ficheroEscogido;
     private GestureDetector mGestureDetector;
     private Lector app = null;
+    Intent servicio = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,12 @@ public class ReproductorActivity extends AppCompatActivity {
 
         if(app == null) {
             app = (Lector) this.getApplicationContext();
+        }
+        app.setCurrentActivity(this);
+
+        //Paro el servicio de escucha para "meneos"
+        if(servicio == null) {
+            servicio = new Intent(this, BackgroundService.class);
         }
 
         try {
@@ -52,6 +64,13 @@ public class ReproductorActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        this.stopService(servicio);
     }
 
     @Override
@@ -125,6 +144,9 @@ public class ReproductorActivity extends AppCompatActivity {
 
 
     private void volver(){
+
+        this.stopService(servicio);
+
         if(player!=null && player.isPlaying()){
             player.stop();
         }
@@ -143,6 +165,16 @@ public class ReproductorActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause(){
+        super.onPause();
+
+        //Lanzo el servicio de escucha para "meneos"
+        if(this == app.getCurrentActivity() && isHomeButtonPressed()) {
+            this.startService(servicio);
+        }
+    }
+
+    @Override
     protected void onDestroy(){
         super.onDestroy();
 
@@ -157,5 +189,17 @@ public class ReproductorActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public boolean isHomeButtonPressed(){
+        Context context = getApplicationContext();
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+        if (!taskInfo.isEmpty()) {
+            ComponentName topActivity = taskInfo.get(0).topActivity;
+            if (!topActivity.getPackageName().equals(context.getPackageName()))
+                return true;
+        }
+        return false;
     }
 }
