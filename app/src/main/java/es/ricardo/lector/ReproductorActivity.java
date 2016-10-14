@@ -23,12 +23,10 @@ import es.ricardo.servicio.BackgroundService;
 
 public class ReproductorActivity extends AppCompatActivity {
 
-    MediaPlayer player;
-
-    //static File ficheroEscogido;
+    private MediaPlayer player;
     private GestureDetector mGestureDetector;
     private Lector app = null;
-    Intent servicio = null;
+    private Intent servicio = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +40,10 @@ public class ReproductorActivity extends AppCompatActivity {
 
         //Paro el servicio de escucha para "meneos"
         if(servicio == null) {
-            servicio = new Intent(this, BackgroundService.class);
+            servicio = new Intent(getApplicationContext(), BackgroundService.class);
         }
 
         try {
-            //Intent intent = getIntent();
-            //ficheroEscogido = (File)intent.getExtras().get("ficheroEscogido");
-
             mGestureDetector = new GestureDetector(this, new GestureListener());
 
             mostrarCapitulo();
@@ -70,7 +65,7 @@ public class ReproductorActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
 
-        this.stopService(servicio);
+        getApplicationContext().stopService(servicio);
     }
 
     @Override
@@ -145,7 +140,7 @@ public class ReproductorActivity extends AppCompatActivity {
 
     private void volver(){
 
-        this.stopService(servicio);
+       // this.stopService(servicio);
 
         if(player!=null && player.isPlaying()){
             player.stop();
@@ -169,8 +164,8 @@ public class ReproductorActivity extends AppCompatActivity {
         super.onPause();
 
         //Lanzo el servicio de escucha para "meneos"
-        if(this == app.getCurrentActivity() && isHomeButtonPressed()) {
-            this.startService(servicio);
+        if(this == app.getCurrentActivity() && app.isHomeButtonPressed()) {
+            getApplicationContext().startService(servicio);
         }
     }
 
@@ -191,15 +186,4 @@ public class ReproductorActivity extends AppCompatActivity {
         });
     }
 
-    public boolean isHomeButtonPressed(){
-        Context context = getApplicationContext();
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-        if (!taskInfo.isEmpty()) {
-            ComponentName topActivity = taskInfo.get(0).topActivity;
-            if (!topActivity.getPackageName().equals(context.getPackageName()))
-                return true;
-        }
-        return false;
-    }
 }

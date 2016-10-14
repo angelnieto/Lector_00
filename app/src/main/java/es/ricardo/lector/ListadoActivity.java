@@ -34,10 +34,12 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 
+import es.ricardo.servicio.BackgroundService;
+
 public class ListadoActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private TextToSpeech tts;
-    //TTSManager ttsManager = null;
+    private Intent servicio = null;
     private TareaAsincrona tareaAsincrona=null;
     private Lector app = null;
 
@@ -59,6 +61,11 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
             app = (Lector) this.getApplicationContext();
         }
         app.setCurrentActivity(this);
+
+        //Paro el servicio de escucha para "meneos"
+        if(servicio == null) {
+            servicio = new Intent(getApplicationContext(), BackgroundService.class);
+        }
 
         //Escalo la barra de progreso acorde a la resolución de la pantalla
         WindowManager windowManager =  (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -98,6 +105,18 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
 
         //reseteo la posición cuando pulsamos el botón de Back
         app.setPosicionActual(0);
+
+        //Lanzo el servicio de escucha para "meneos"
+        if(this == app.getCurrentActivity() && app.isHomeButtonPressed()) {
+            getApplicationContext().startService(servicio);
+        }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        getApplicationContext().stopService(servicio);
     }
 
     public void updateResults(final Collection files) {

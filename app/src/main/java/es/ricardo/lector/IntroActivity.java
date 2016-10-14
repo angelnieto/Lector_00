@@ -8,12 +8,17 @@ import android.util.Log;
 
 import java.util.LinkedList;
 
+import es.ricardo.servicio.BackgroundService;
+
 
 public class IntroActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
 
     private MediaPlayer player = null;
     private TareaAsincrona tareaAsincrona=null;
     ListadoActivity activity = new ListadoActivity();
+    private Intent servicio = null;
+    private Lector app = null;
+
     static final int ACTION_VALUE=1;
 
     @Override
@@ -21,8 +26,15 @@ public class IntroActivity extends AppCompatActivity implements MediaPlayer.OnCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-        Lector app = (Lector)this.getApplicationContext();
+        if(app == null){
+            app = (Lector)this.getApplicationContext();
+        }
         app.setCurrentActivity(this);
+
+        //Paro el servicio de escucha para "meneos"
+        if(servicio == null) {
+            servicio = new Intent(getApplicationContext(), BackgroundService.class);
+        }
 
         app.setFiles(new LinkedList());
         app.getTtsManager().stop();
@@ -34,6 +46,23 @@ public class IntroActivity extends AppCompatActivity implements MediaPlayer.OnCo
         player.setOnCompletionListener(this);
         player.start();
 
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        getApplicationContext().stopService(servicio);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        //Lanzo el servicio de escucha para "meneos"
+        if(this == app.getCurrentActivity() && app.isHomeButtonPressed()) {
+            getApplicationContext().startService(servicio);
+        }
     }
 
     @Override

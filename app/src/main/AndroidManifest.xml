@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".IntroActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +28,8 @@
             android:launchMode="singleTask"></activity>
         <activity
             android:name=".ListadoActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"></activity>
 
         <service
             android:name="es.ricardo.servicio.BackgroundService"

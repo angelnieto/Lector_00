@@ -1,7 +1,10 @@
 package es.ricardo.lector;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
+import android.content.ComponentName;
+import android.content.Context;
 
 import java.io.File;
 import java.util.Arrays;
@@ -127,5 +130,16 @@ public class Lector extends Application {
         this.posicionActual = posicionActual;
     }
 
+    public boolean isHomeButtonPressed(){
+        Context context = getApplicationContext();
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+        if (!taskInfo.isEmpty()) {
+            ComponentName topActivity = taskInfo.get(0).topActivity;
+            if (!topActivity.getPackageName().equals(context.getPackageName()))
+                return true;
+        }
+        return false;
+    }
 
 }
