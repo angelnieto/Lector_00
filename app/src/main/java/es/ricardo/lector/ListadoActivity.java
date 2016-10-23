@@ -126,8 +126,8 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
         app.setFiles(files);
 
         if(!files.isEmpty()) {
-            componerListado(files);
-            app.getTtsManager().addBooks(files, listaHorizontal);
+            componerListado(app.getFiles());
+            app.getTtsManager().addBooks(app.getFiles(), listaHorizontal);
         }else{
             sinResultados();
 
@@ -155,7 +155,7 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
         listaHorizontal.addView(layout);
     }
 
-    private void componerListado(Collection files) {
+    private void componerListado(Collection<AudioLibro> files) {
         //Activo el escuchador de eventos
         HorizontalScrollView scrollView= (HorizontalScrollView)findViewById(R.id.scroll);
         scrollView.setOnTouchListener(this);
@@ -172,8 +172,8 @@ public class ListadoActivity extends AppCompatActivity implements View.OnTouchLi
             texto.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             texto.setTextColor(getResources().getColor(R.color.colorAccent));
             texto.setGravity(Gravity.CENTER);
-            File libro = (File)iterator.next();
-            texto.setText(libro.getName().substring(0, libro.getName().lastIndexOf(".")));
+            AudioLibro libro = (AudioLibro)iterator.next();
+            texto.setText(libro.getNombre());
             texto.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
             layout.addView(texto);
 

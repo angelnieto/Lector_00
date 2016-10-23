@@ -5,14 +5,21 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Aarón Formación y Co on 03/10/2016.
@@ -25,7 +32,7 @@ public class Lector extends Application {
 
     private TTSManager ttsManager = null;
 
-    private Collection files = new LinkedList();
+    private Collection<AudioLibro> files = new LinkedList<>();
 
     static final int   SINGLE_TAP       = 1;
     static final int   DOUBLE_TAP       = 2;
@@ -52,14 +59,59 @@ public class Lector extends Application {
     }
 
     public void setFiles(Collection files){
-        this.files = files;
+
+        this.files = getAudioLibros(files);
     }
 
-    public Collection getFiles(){
+    public Collection<AudioLibro> getFiles(){
         return files;
     }
 
-    @Override
+    private Collection<AudioLibro> getAudioLibros(Collection files) {
+        Collection<AudioLibro> lista = new LinkedList<>();
+
+        Map<Date, AudioLibro> audiolibros = new LinkedHashMap<>();
+
+        Iterator it = files.iterator();
+        while(it.hasNext()){
+            File libro = (File) it.next();
+
+            Calendar calendario = GregorianCalendar.getInstance();
+            calendario.setTimeInMillis(libro.lastModified());
+
+              if(!audiolibros.containsKey(calendario.getTime())){
+
+                  AudioLibro audioLibro = new AudioLibro();
+
+                  MediaMetadataRetriever mediaMetadataRetriever = (MediaMetadataRetriever) new MediaMetadataRetriever();
+                  Uri uri = (Uri) Uri.fromFile(libro);
+                  mediaMetadataRetriever.setDataSource(getApplicationContext(), uri);
+                  String album = (String) mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+                  if(album != null) {
+                      audioLibro.setNombre(album);
+                  }else{
+                      audioLibro.setNombre(libro.getName().substring(0, libro.getName().lastIndexOf(".")));
+                  }
+                  audioLibro.setFecha(calendario.getTime());
+                  audioLibro.setCapitulos(new LinkedList<File>());
+
+                  audioLibro.getCapitulos().add(libro);
+
+                  audiolibros.put(calendario.getTime(), audioLibro);
+              }else{
+                  audiolibros.get(calendario.getTime()).getCapitulos().add(libro);
+              }
+        }
+
+        if(!audiolibros.isEmpty()){
+            lista = audiolibros.values();
+        }
+
+        return lista;
+    }
+
+
+
     public void onCreate() {
         super.onCreate();
 

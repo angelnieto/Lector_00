@@ -31,9 +31,9 @@ public class TTSManager  {
         return actualFile;
     }
 
-    public void setActualFile(File actualFile) {
+    /*public void setActualFile(File actualFile) {
         this.actualFile = actualFile;
-    }
+    }*/
 
     public String getActualFileName() {
         return actualFileName;
@@ -105,7 +105,7 @@ public class TTSManager  {
                 Log.e("error", "TTS Not Initialized");
     }
 
-    public void addBooks(Collection libros, LinearLayout listaHorizontal){
+    public void addBooks(Collection<AudioLibro> libros, LinearLayout listaHorizontal){
         Iterator iterator = libros.iterator();
         if(iterator.hasNext() && isLoaded){
             decirTitulo(iterator, listaHorizontal);
@@ -113,8 +113,8 @@ public class TTSManager  {
     }
 
     private void decirTitulo(final Iterator iterator, final LinearLayout listaHorizontal) {
-        File file = (File) iterator.next();
-        final String fileName = file.getName().substring(0, file.getName().lastIndexOf("."));
+        AudioLibro file = (AudioLibro) iterator.next();
+        final String fileName = file.getNombre();
         initQueue(fileName);
 
         HashMap<String, String> myHashAlarm = new HashMap<String, String>();
